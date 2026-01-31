@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:developer';
+import 'dart:developer' as developer;
 import 'dart:math';
 import 'package:crypto/crypto.dart';
 import 'package:pure_live/common/index.dart';
@@ -118,7 +118,7 @@ class HuyaSite implements LiveSite {
                   links[name]?.add(rateUrl);
                 }
               } catch (e) {
-                log('WUP2 token error for $cdnType: $e',
+                developer.log('WUP2 token error for $cdnType: $e',
                     name: 'HuyaApi.getLiveStream');
               }
             }
@@ -126,7 +126,7 @@ class HuyaSite implements LiveSite {
         }
       }
     } catch (e) {
-      log(e.toString(), name: 'HuyaApi.getRoomStreamLink');
+      developer.log(e.toString(), name: 'HuyaApi.getRoomStreamLink');
       return links;
     }
     return links;
@@ -162,7 +162,7 @@ class HuyaSite implements LiveSite {
         }
       }
     } catch (e) {
-      log(e.toString(), name: 'HuyaApi.getRoomInfo');
+      developer.log(e.toString(), name: 'HuyaApi.getRoomInfo');
       return room;
     }
     return room;
@@ -197,7 +197,7 @@ class HuyaSite implements LiveSite {
         }
       }
     } catch (e) {
-      log(e.toString(), name: 'HuyaApi.getRecommend');
+      developer.log(e.toString(), name: 'HuyaApi.getRecommend');
       return list;
     }
     return list;
@@ -235,7 +235,7 @@ class HuyaSite implements LiveSite {
         areaList.add(subAreaList);
       }
     } catch (e) {
-      log(e.toString(), name: 'HuyaApi.getAreaList');
+      developer.log(e.toString(), name: 'HuyaApi.getAreaList');
       return areaList;
     }
     return areaList;
@@ -271,7 +271,7 @@ class HuyaSite implements LiveSite {
         }
       }
     } catch (e) {
-      log(e.toString(), name: 'HuyaApi.getAreaRooms');
+      developer.log(e.toString(), name: 'HuyaApi.getAreaRooms');
       return list;
     }
     return list;
@@ -301,7 +301,7 @@ class HuyaSite implements LiveSite {
         list.add(owner);
       }
     } catch (e) {
-      log(e.toString(), name: 'HuyaApi.search');
+      developer.log(e.toString(), name: 'HuyaApi.search');
       return list;
     }
     return list;
