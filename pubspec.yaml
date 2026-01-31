@@ -72,13 +72,18 @@ dependencies:
   
   # utils
   get: ^4.6.5
-  intl: ^0.17.0
+  intl: ^0.19.0
   date_format: ^2.0.7
   path: ^1.8.2
   file: ^6.1.4
   path_provider: ^2.0.13
   dart_tars_protocol:
     git: https://github.com/xiaoyaocz/dart_tars_protocol.git
+  tars_dart:
+    git:
+      url: https://github.com/xiaoyaocz/dart_simple_live.git
+      path: ./simple_live_core/packages/tars_dart
+  crypto: ^3.0.3
   html_unescape: ^2.0.0
   # dpad_container: ^1.0.1
   # The following adds the Cupertino Icons font to your application.

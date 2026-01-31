@@ -10,8 +10,8 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-  
-  
+
+
 env:
   # APP name
   APP_NAME: IceLiveViewer
@@ -25,24 +25,27 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-      - uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v3
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
+          flutter-version: '3.10.6'
           channel: 'stable'
-          
+
       - name: Build
         run: |
           flutter config --enable-windows-desktop
           flutter pub get
           flutter build windows
-    
+
       - name: Archive Release
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
           filename: IceLiveViewer-${{github.ref_name}}-windows.zip
           directory: build/windows/runner/Release
-      
+
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
@@ -67,37 +70,41 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-      
-      - name: Setup Java to compile Android project
-        uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
         with:
-          java-version: '12.x'
+          distribution: 'temurin'
+          java-version: '17'
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
+          flutter-version: '3.10.6'
           channel: 'stable'
-      
+
       - name: Create the Keystore file
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
           KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
         run: |
           # import keystore from secrets
-          echo $KEYSTORE_BASE64 | base64 -di > android/app/key.jks
+          echo $KEYSTORE_BASE64 | base64 -di > android/pure_live.jks
           echo $KEY_PROPERTIES | base64 -di > android/key.properties
-          
+
       - name: Build
         run: |
           flutter pub get
-          flutter build apk
-    
+          flutter build apk --split-per-abi
+
       - name: Rename APK
         run: |
-          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/IceLiveViewer-${{github.ref_name}}-android.apk
-          
-      
+          mv build/app/outputs/flutter-apk/app-arm64-v8a-release.apk build/app/outputs/flutter-apk/IceLiveViewer-${{github.ref_name}}-arm64.apk
+          mv build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk build/app/outputs/flutter-apk/IceLiveViewer-${{github.ref_name}}-arm32.apk
+          mv build/app/outputs/flutter-apk/app-x86_64-release.apk build/app/outputs/flutter-apk/IceLiveViewer-${{github.ref_name}}-x86_64.apk
+
+
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
@@ -106,10 +113,15 @@ jobs:
           prerelease: true
           token: ${{ secrets.GITHUB_TOKEN }}
           files: |
-            build/app/outputs/flutter-apk/IceLiveViewer-${{github.ref_name}}-android.apk
+            build/app/outputs/flutter-apk/IceLiveViewer-${{github.ref_name}}-arm64.apk
+            build/app/outputs/flutter-apk/IceLiveViewer-${{github.ref_name}}-arm32.apk
+            build/app/outputs/flutter-apk/IceLiveViewer-${{github.ref_name}}-x86_64.apk
 
       - name: Upload Release Asset
         uses: actions/upload-artifact@v3
         with:
           name: artifact-android
-          path: build/app/outputs/flutter-apk/IceLiveViewer-${{github.ref_name}}-android.apk
+          path: |
+            build/app/outputs/flutter-apk/IceLiveViewer-${{github.ref_name}}-arm64.apk
+            build/app/outputs/flutter-apk/IceLiveViewer-${{github.ref_name}}-arm32.apk
+            build/app/outputs/flutter-apk/IceLiveViewer-${{github.ref_name}}-x86_64.apk
